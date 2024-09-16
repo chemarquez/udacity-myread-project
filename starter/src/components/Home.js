@@ -31,6 +31,7 @@ const Home = () => {
         <div className="list-books">
             <div className="list-books-title">
                 <h1>MyReads</h1>
+                <Link to="/logout" className="list-books-logout">Logout</Link>
             </div>
             <div className="list-books-content">
                 <BookShelf
