@@ -1,0 +1,44 @@
+# EditorConfig is awesome: https://EditorConfig.org
+
+# Top-most EditorConfig file
+root = true
+
+# Apply these settings to all files
+[*]
+charset = utf-8
+end_of_line = lf
+indent_style = space
+indent_size = 4
+tab_width = 4
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+# Specific settings for HTML files
+[*.html]
+indent_style = space
+indent_size = 4
+
+# Specific settings for CSS files
+[*.css]
+indent_style = space
+indent_size = 4
+
+# Specific settings for JavaScript files
+[*.js]
+indent_style = space
+indent_size = 4
+
+# Specific settings for JSON files
+[*.json]
+indent_style = space
+indent_size = 4
+
+# Specific settings for YAML files
+[*.yml]
+indent_style = space
+indent_size = 4
+
+# Specific settings for Markdown files
+[*.md]
+indent_style = space
+indent_size = 4
