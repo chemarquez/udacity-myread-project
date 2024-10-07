@@ -10,7 +10,7 @@ const BookShelfChanger = ({ book, onUpdateBookCategory, isVisible }) => {
     return (
         <div className="book-shelf-changer">
             <select onChange={handleChange} value={book.shelf}>
-                <option value="none" disabled>
+                <option value="none">
                     Move to...
                 </option>
                 <option value="currentlyReading">Currently Reading</option>

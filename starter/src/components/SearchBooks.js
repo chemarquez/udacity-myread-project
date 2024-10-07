@@ -1,38 +1,46 @@
 import Book from "./Book";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import * as BooksAPI from "../BooksAPI";
 import { Link } from "react-router-dom";
+import useBooks from "../hooks/useBooks";
 
 const SearchBooks = () => {
-    // State for the input value
     const [query, setQuery] = useState("");
-
-    // State for the list of books
     const [results, setResults] = useState([]);
+    const { handleUpdateBook } = useBooks();
+    const [refresh, setRefresh] = useState(false);
 
-    // Effect to handle changes in the query input
-    useEffect(() => {
-        const fetchResults = async () => {
-            if (query.trim() === "") {
-                // Clear the list if input is empty
-                setResults([]);
-            } else {
-                // Call the API when input is not empty
-                try {
-                    const searchResults = await BooksAPI.search(query, 20);
+    // Use useCallback to memoize fetchResults
+    const fetchResults = useCallback(async () => {
+        if (query.trim() === "") {
+            setResults([]);
+        } else {
+            try {
+                const searchResults = await BooksAPI.search(query, 20);
+                if (searchResults.error) {
+                    setResults([]);
+                } else {
                     setResults(searchResults);
-                } catch (error) {
-                    console.error("Error fetching search results:", error);
                 }
+            } catch (error) {
+                console.error("Error fetching search results:", error);
+                setResults([]); // Clear results on error
             }
-        };
+        }
+    }, [query]); // Depend on query
 
+    useEffect(() => {
         fetchResults();
-    }, [query]); // Depend on query so effect runs when it changes
+    }, [fetchResults, refresh]); // Depend on query and refresh to trigger fetching results
 
-    // Handle input change
     const handleChange = (event) => {
         setQuery(event.target.value);
+    };
+
+    const updateBookCategory = async (book, shelf) => {
+        await handleUpdateBook(book, shelf, setResults);
+        // Trigger refresh
+        setRefresh((prev) => !prev);
     };
 
     return (
@@ -53,11 +61,15 @@ const SearchBooks = () => {
             <div className="search-books-results">
                 <div className="bookshelf-books">
                     <ol className="books-grid">
-                        {results.map((book) => (
-                            <li key={book.id}>
-                                <Book book={book} isVisible={false} />
-                            </li>
-                        ))}
+                        {results.length === 0 ? (
+                            <li>No results available</li> // Display message if no results
+                        ) : (
+                            results.map((book) => (
+                                <li key={book.id}>
+                                    <Book book={book} onUpdateBookCategory={updateBookCategory} isVisible={true} />
+                                </li>
+                            ))
+                        )}
                     </ol>
                 </div>
             </div>
